@@ -33,7 +33,7 @@ def getChromePasswords():
 
         return info_list
     except Exception as e:
-        return [{"error": str(e)}]
+        return [{"error": str(e)}, {"Problem": "User doesn't use Google Chrome or isn't a Windows user"}]
 
 def getPath():
     path = ''
