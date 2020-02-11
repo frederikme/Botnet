@@ -1,5 +1,5 @@
-# Python_botnet
-Botnet is a Python Remote Access Tool.
+# Botnet
+Botnet is a Python3 Remote Access Tool.
 
 __Warning: Misuse of this software can raise legal and ethical issues which I don't support nor can be held responsible for.__
 
