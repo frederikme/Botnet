@@ -11,11 +11,11 @@ Botnet is, just like Ares, made of two programs:
 ## Based on Github project Ares: https://github.com/sweetsoftware/Ares
 Differences?
 1. Updated from python 2 -> python 3
-2. Extra features like screencaptures, webcam capture, keylogger, password grabber (More about that further on in the documentation)
+2. Extra features like screencaptures, webcam capture, keylogger, password grabber 
 
 ## Setup
 
-__Note: I always suggest to create a virtual environment__
+__Note: I suggest creating a virtual environment__
 
 Install the python requirements: 
 
@@ -59,6 +59,26 @@ To see a list of supported options run
 ```
 ./builder.py -h
 ```
+
+## Commands
+
+```
+cd </path/to/directory>
+upload <localfile>
+download <remote_url> <destination>
+clean
+persist
+exit
+zip <archive_name> <folder>
+python <python_file> or python <python_command>
+help
+keylogger
+screenshot
+camshot
+passwords
+* and other cmd commands *
+```
+
 
 
 # TODO provide further documentation
