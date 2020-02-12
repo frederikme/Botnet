@@ -63,19 +63,43 @@ To see a list of supported options run
 ## Commands
 
 ```
-cd </path/to/directory>
-upload <localfile>
-download <remote_url> <destination>
-clean
-persist
-exit
+<any shell command>
+Executes the command in a shell and return its output.
+
+upload <local_file>
+Uploads <local_file> to server.
+
+download <url> <destination>
+Downloads a file through HTTP(S).
+
 zip <archive_name> <folder>
-python <python_file> or python <python_command>
-help
-keylogger
+Creates a zip archive of the folder.
+
+python <command|file>
+Runs a Python command or local file.
+
 screenshot
+Takes a screenshot and uploads the image to server.
+
 camshot
+Takes a webcam image and uploads the image to server.
+
+keylogger
+Shows all pressed keys since start up.
+
 passwords
+Shows all stored passwords on the pc, including websites and wifi.
+
 delete passwords
-* and other cmd commands *
+Deletes all stored cookies from the victims' pc. 
+This way you could try to retreive password from keylogs if you cannot get them from the passwords command.
+
+persist
+Installs the agent.
+
+clean
+Uninstalls the agent.
+
+exit
+Kills the agent.
 ```
