@@ -11,7 +11,7 @@ Botnet is, just like Ares, made of two programs:
 ## Based on Github project Ares: https://github.com/sweetsoftware/Ares
 Differences?
 1. Updated from python 2 -> python 3
-2. Extra features like screencaptures, webcam capture, keylogger, password grabber 
+2. Extra features like screencaptures, webcam capture, keylogger, password grabber (websites and wifi), ...
 
 ## Setup
 
@@ -76,9 +76,6 @@ keylogger
 screenshot
 camshot
 passwords
+delete passwords
 * and other cmd commands *
 ```
-
-
-
-# TODO provide further documentation

