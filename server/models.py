@@ -43,7 +43,7 @@ class Command(db.Model):
     __tablename__ = 'commands'
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     agent_id = db.Column(db.Integer(), db.ForeignKey('agents.id'))
-    agent = db.relationship('Agent', backref=db.backref('commands', lazy='dynamic'))
+    agent = db.relationship('agent', backref=db.backref('commands', lazy='dynamic'))
     cmdline = db.Column(db.String(255))
     timestamp = db.Column(db.DateTime(), default=datetime.now)
 

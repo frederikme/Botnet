@@ -27,7 +27,7 @@ manager = Manager(app)
 
 @app.after_request
 def headers(response):
-    response.headers["Server"] = "Ares"
+    response.headers["server"] = "Ares"
     return response
 
 

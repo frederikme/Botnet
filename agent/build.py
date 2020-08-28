@@ -2,6 +2,7 @@ import os
 import shutil
 import tempfile
 import config
+import time
 
 # TODO: Error running executable on mac. TODO: check for windows, TODO: add mac version (possible fail might be because it is linux generated file)
 def build_agent(output, platform):
@@ -24,7 +25,7 @@ def build_agent(output, platform):
 
     cwd = os.getcwd()
     os.chdir(working_dir)
-    shutil.move('agent.py', prog_name + '.py')
+    shutil.move('agent.py', prog_name + '.py')  
 
     if platform == 'linux':
         os.system('pyinstaller --noconsole --onefile ' + prog_name + '.py')
@@ -32,6 +33,7 @@ def build_agent(output, platform):
 
     elif platform == 'windows':
         os.system('pyinstaller --noconsole --onefile ' + prog_name + '.py')
+        time.sleep(2)
         if not prog_name.endswith(".exe"):
             prog_name += ".exe"
         agent_file = os.path.join(working_dir, 'dist', prog_name)
@@ -39,7 +41,7 @@ def build_agent(output, platform):
 
     os.rename(agent_file, output)
     shutil.rmtree(working_dir)
-    print("[+] Agent built successfully: %s" % output)
+    print("[+] agent built successfully: %s" % output)
 
 
 def main():

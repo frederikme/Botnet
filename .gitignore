@@ -1,5 +1,5 @@
 /venv/
-/Server/ares.db
+/server/ares.db
 /BUGS.txt
 /.idea/
-/Server/uploads/
+/server/uploads/
